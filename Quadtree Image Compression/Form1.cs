@@ -1,0 +1,10 @@
+namespace Quadtree_Image_Compression
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+    }
+}

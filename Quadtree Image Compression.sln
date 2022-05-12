@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32505.173
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quadtree Image Compression", "Quadtree Image Compression\Quadtree Image Compression.csproj", "{2E004010-D8C0-42A9-89BA-E9C050D8EEFF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2E004010-D8C0-42A9-89BA-E9C050D8EEFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E004010-D8C0-42A9-89BA-E9C050D8EEFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E004010-D8C0-42A9-89BA-E9C050D8EEFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E004010-D8C0-42A9-89BA-E9C050D8EEFF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {60DF193A-063F-449B-BE1C-6FC1F34B865E}
+	EndGlobalSection
+EndGlobal
