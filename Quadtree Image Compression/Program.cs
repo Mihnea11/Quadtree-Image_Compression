@@ -13,6 +13,7 @@ namespace Quadtree_Image_Compression
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
             //test commit
+            //test commit cosmin
         }
     }
 }
