@@ -6,67 +6,31 @@ namespace Quadtree_Image_Compression
     {
         private QuadTreeNode? root;
 
-        private static Color NearestCluserColor(Color inputColor)
+        public Color ColorAverage(Bitmap image, Point startCorner, Point stopCorner)
         {
-            var inputRed = Convert.ToDouble(inputColor.R);
-            var inputGreen = Convert.ToDouble(inputColor.G);
-            var inputBlue = Convert.ToDouble(inputColor.B);
-            var colors = new List<Color>();
+            long r = 0;
+            long g = 0;
+            long b = 0;
 
-            foreach (var knownColor in Enum.GetValues(typeof(KnownColor)))
+            int total = image.Width * image.Height;
+
+            for (int i = 0; i < stopCorner.X; i++)
             {
-                var color = Color.FromKnownColor((KnownColor)knownColor);
-                if (!color.IsSystemColor)
+                for (int j = startCorner.Y; j < stopCorner.Y; j++)
                 {
-                    colors.Add(color);
+                    Color clr = image.GetPixel(i, j);
+
+                    r += clr.R;
+                    g += clr.G;
+                    b += clr.B;
                 }
             }
 
-            var nearestColor = Color.Empty;
-            var distance = 500.0;
+            r /= total;
+            g /= total;
+            b /= total;
 
-            foreach (var color in colors)
-            {
-                var testRed = Math.Pow(Convert.ToDouble(color.R) - inputRed, 2.0);
-                var testGreen = Math.Pow(Convert.ToDouble(color.G) - inputGreen, 2.0);
-                var testBlue = Math.Pow(Convert.ToDouble(color.B) - inputBlue, 2.0);
-                var tempDistance = Math.Sqrt(testBlue + testGreen + testRed);
-
-                if (tempDistance == 0.0)
-                {
-                    return color;
-                }
-                if (tempDistance < distance)
-                {
-                    distance = tempDistance;
-                    nearestColor = color;
-                }
-            }
-
-            return nearestColor;
-        }
-
-        public static Color DominantColor(Bitmap bitMap)
-        {
-            var colorIncidence = new Dictionary<int, int>();
-
-            for (var x = 0; x < bitMap.Size.Width; x++)
-            {
-                for (var y = 0; y < bitMap.Size.Height; y++)
-                {
-                    var pixelColor = bitMap.GetPixel(x, y).ToArgb();
-                    if (colorIncidence.Keys.Contains(pixelColor))
-                    {
-                        colorIncidence[pixelColor]++;
-                    }
-                    else
-                    {
-                        colorIncidence.Add(pixelColor, 1);
-                    }
-                }
-            }
-
-            return Color.FromArgb(colorIncidence.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value).First().Key);
+            return Color.FromArgb((int)r, (int)g, (int)b);
         }
 
         public QuadTree()
@@ -76,7 +40,7 @@ namespace Quadtree_Image_Compression
 
         public void BuildTree(Bitmap image, ref PictureBox box)
         {
-            Color averageColor = DominantColor(image);
+            Color averageColor = ColorAverage(image, new Point(0, 0), new Point(image.Width, image.Height));
 
             for (int i = 0; i < image.Width; i++)
             {
