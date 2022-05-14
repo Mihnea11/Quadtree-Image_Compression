@@ -35,6 +35,8 @@
             this.PictureDisplay = new System.Windows.Forms.PictureBox();
             this.LoadButton = new System.Windows.Forms.Button();
             this.CompressButton = new System.Windows.Forms.Button();
+            this.textLabel = new System.Windows.Forms.Label();
+            this.elapsedTimeLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureDisplay)).BeginInit();
             this.SuspendLayout();
@@ -80,7 +82,9 @@
             // 
             this.LoadButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.LoadButton.BackColor = System.Drawing.SystemColors.Desktop;
-            this.LoadButton.FlatAppearance.BorderSize = 0;
+            this.LoadButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.LoadButton.FlatAppearance.BorderSize = 2;
+            this.LoadButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.LoadButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.LoadButton.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.LoadButton.ForeColor = System.Drawing.SystemColors.Control;
@@ -96,7 +100,9 @@
             // 
             this.CompressButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.CompressButton.BackColor = System.Drawing.SystemColors.Desktop;
-            this.CompressButton.FlatAppearance.BorderSize = 0;
+            this.CompressButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.CompressButton.FlatAppearance.BorderSize = 2;
+            this.CompressButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.CompressButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CompressButton.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.CompressButton.ForeColor = System.Drawing.SystemColors.Control;
@@ -108,18 +114,41 @@
             this.CompressButton.UseVisualStyleBackColor = false;
             this.CompressButton.Click += new System.EventHandler(this.CompressButton_Click);
             // 
+            // textLabel
+            // 
+            this.textLabel.AutoSize = true;
+            this.textLabel.Location = new System.Drawing.Point(249, 559);
+            this.textLabel.Name = "textLabel";
+            this.textLabel.Size = new System.Drawing.Size(80, 15);
+            this.textLabel.TabIndex = 3;
+            this.textLabel.Text = "Elapsed time :";
+            // 
+            // elapsedTimeLabel
+            // 
+            this.elapsedTimeLabel.AutoSize = true;
+            this.elapsedTimeLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.elapsedTimeLabel.Location = new System.Drawing.Point(335, 559);
+            this.elapsedTimeLabel.Name = "elapsedTimeLabel";
+            this.elapsedTimeLabel.Size = new System.Drawing.Size(12, 15);
+            this.elapsedTimeLabel.TabIndex = 4;
+            this.elapsedTimeLabel.Text = "-";
+            // 
             // ImageCompressionForm
             // 
             this.ClientSize = new System.Drawing.Size(720, 583);
+            this.Controls.Add(this.elapsedTimeLabel);
+            this.Controls.Add(this.textLabel);
             this.Controls.Add(this.CompressButton);
             this.Controls.Add(this.LoadButton);
             this.Controls.Add(this.PictureDisplay);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ImageCompressionForm";
             this.Text = "Image Compression";
+            this.Load += new System.EventHandler(this.ImageCompressionForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureDisplay)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -131,5 +160,7 @@
         private PictureBox PictureDisplay;
         private Button LoadButton;
         private Button CompressButton;
+        private Label textLabel;
+        private Label elapsedTimeLabel;
     }
 }
