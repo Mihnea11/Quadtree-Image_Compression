@@ -5,55 +5,78 @@ namespace Quadtree_Image_Compression
     internal class QuadTree
     {
         private QuadTreeNode? root;
-        private List<Bitmap> imageProgression;
-        
-        private Color FindAverageColor(Bitmap image, Point start, Point stop)
+
+        private static Color NearestCluserColor(Color inputColor)
         {
-            BitmapData imageData = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            int stride = imageData.Stride;
-            IntPtr scan0 = imageData.Scan0;
+            var inputRed = Convert.ToDouble(inputColor.R);
+            var inputGreen = Convert.ToDouble(inputColor.G);
+            var inputBlue = Convert.ToDouble(inputColor.B);
+            var colors = new List<Color>();
 
-            long[] totals = new long[] { 0, 0, 0 };
-
-            int width = image.Width;
-            int height = image.Height;
-
-            unsafe
+            foreach (var knownColor in Enum.GetValues(typeof(KnownColor)))
             {
-                byte* pixels = (byte*)(void*)scan0;
-
-                for (int i = 0; i < height; i++)
+                var color = Color.FromKnownColor((KnownColor)knownColor);
+                if (!color.IsSystemColor)
                 {
-                    for (int j = 0; j < width; j++)
-                    {
-                        for (int color = 0; color < 3; color++)
-                        {
-                            int index = (i * stride) + j * 4 + color;
+                    colors.Add(color);
+                }
+            }
 
-                            totals[color] += pixels[index];
-                        }
+            var nearestColor = Color.Empty;
+            var distance = 500.0;
+
+            foreach (var color in colors)
+            {
+                var testRed = Math.Pow(Convert.ToDouble(color.R) - inputRed, 2.0);
+                var testGreen = Math.Pow(Convert.ToDouble(color.G) - inputGreen, 2.0);
+                var testBlue = Math.Pow(Convert.ToDouble(color.B) - inputBlue, 2.0);
+                var tempDistance = Math.Sqrt(testBlue + testGreen + testRed);
+
+                if (tempDistance == 0.0)
+                {
+                    return color;
+                }
+                if (tempDistance < distance)
+                {
+                    distance = tempDistance;
+                    nearestColor = color;
+                }
+            }
+
+            return nearestColor;
+        }
+
+        public static Color DominantColor(Bitmap bitMap)
+        {
+            var colorIncidence = new Dictionary<int, int>();
+
+            for (var x = 0; x < bitMap.Size.Width; x++)
+            {
+                for (var y = 0; y < bitMap.Size.Height; y++)
+                {
+                    var pixelColor = bitMap.GetPixel(x, y).ToArgb();
+                    if (colorIncidence.Keys.Contains(pixelColor))
+                    {
+                        colorIncidence[pixelColor]++;
+                    }
+                    else
+                    {
+                        colorIncidence.Add(pixelColor, 1);
                     }
                 }
             }
 
-            int R = (int)(totals[0] / (width * height));
-            int G = (int)(totals[1] / (width * height));
-            int B = (int)(totals[2] / (width * height));
-
-            image.UnlockBits(imageData);
-
-            return Color.FromArgb(R, G, B);
+            return Color.FromArgb(colorIncidence.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value).First().Key);
         }
 
         public QuadTree()
         {
             root = null;
-            imageProgression = new List<Bitmap>();
         }
 
         public void BuildTree(Bitmap image, ref PictureBox box)
         {
-            Color averageColor = FindAverageColor(image, new Point(0, 0), new Point(image.Width, image.Height));
+            Color averageColor = DominantColor(image);
 
             for (int i = 0; i < image.Width; i++)
             {
