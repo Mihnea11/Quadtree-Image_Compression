@@ -145,7 +145,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ImageCompressionForm";
             this.Text = "Image Compression";
-            this.Load += new System.EventHandler(this.ImageCompressionForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureDisplay)).EndInit();
             this.ResumeLayout(false);
