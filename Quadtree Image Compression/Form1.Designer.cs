@@ -71,7 +71,7 @@
             // 
             this.PictureDisplay.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.PictureDisplay.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.PictureDisplay.Location = new System.Drawing.Point(0, 0);
+            this.PictureDisplay.Location = new System.Drawing.Point(215, 41);
             this.PictureDisplay.Name = "PictureDisplay";
             this.PictureDisplay.Size = new System.Drawing.Size(720, 480);
             this.PictureDisplay.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -88,7 +88,7 @@
             this.LoadButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.LoadButton.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.LoadButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.LoadButton.Location = new System.Drawing.Point(90, 514);
+            this.LoadButton.Location = new System.Drawing.Point(305, 555);
             this.LoadButton.Name = "LoadButton";
             this.LoadButton.Size = new System.Drawing.Size(211, 35);
             this.LoadButton.TabIndex = 1;
@@ -106,7 +106,7 @@
             this.CompressButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CompressButton.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.CompressButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.CompressButton.Location = new System.Drawing.Point(419, 514);
+            this.CompressButton.Location = new System.Drawing.Point(634, 555);
             this.CompressButton.Name = "CompressButton";
             this.CompressButton.Size = new System.Drawing.Size(211, 35);
             this.CompressButton.TabIndex = 2;
@@ -116,26 +116,27 @@
             // 
             // textLabel
             // 
-            this.textLabel.AutoSize = true;
-            this.textLabel.Location = new System.Drawing.Point(249, 559);
+            this.textLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.textLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.textLabel.Location = new System.Drawing.Point(453, 603);
             this.textLabel.Name = "textLabel";
-            this.textLabel.Size = new System.Drawing.Size(80, 15);
+            this.textLabel.Size = new System.Drawing.Size(109, 29);
             this.textLabel.TabIndex = 3;
             this.textLabel.Text = "Elapsed time :";
             // 
             // elapsedTimeLabel
             // 
-            this.elapsedTimeLabel.AutoSize = true;
-            this.elapsedTimeLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.elapsedTimeLabel.Location = new System.Drawing.Point(335, 559);
+            this.elapsedTimeLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.elapsedTimeLabel.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.elapsedTimeLabel.Location = new System.Drawing.Point(568, 604);
             this.elapsedTimeLabel.Name = "elapsedTimeLabel";
-            this.elapsedTimeLabel.Size = new System.Drawing.Size(12, 15);
+            this.elapsedTimeLabel.Size = new System.Drawing.Size(111, 28);
             this.elapsedTimeLabel.TabIndex = 4;
             this.elapsedTimeLabel.Text = "-";
             // 
             // ImageCompressionForm
             // 
-            this.ClientSize = new System.Drawing.Size(720, 583);
+            this.ClientSize = new System.Drawing.Size(1151, 664);
             this.Controls.Add(this.elapsedTimeLabel);
             this.Controls.Add(this.textLabel);
             this.Controls.Add(this.CompressButton);
@@ -148,7 +149,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureDisplay)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

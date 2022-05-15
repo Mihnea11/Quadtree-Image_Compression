@@ -52,5 +52,7 @@ namespace Quadtree_Image_Compression
 
             box.Image = image;
         }
+
+
     }
 }
