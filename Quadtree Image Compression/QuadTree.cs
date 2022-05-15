@@ -148,7 +148,7 @@ namespace Quadtree_Image_Compression
                 var redFrequency = FindColorFrequencies(results.Item2, "Red");
                 var greenFrequency = FindColorFrequencies(results.Item2, "Green");
                 var blueFrequency = FindColorFrequencies(results.Item2, "Blue");
-                var detail = FindDetail(redFrequency, greenFrequency, blueFrequency, image.Width * image.Height);
+                var detail = FindDetail(redFrequency, greenFrequency, blueFrequency, (node.RightCorner.X - node.LeftCorner.X) * (node.RightCorner.Y - node.LeftCorner.Y));
 
                 node.NodeColor = results.Item1;
                 node.NodeError = detail;
@@ -213,8 +213,8 @@ namespace Quadtree_Image_Compression
         {
             root = new QuadTreeNode();
             compressedImage = new List<QuadTreeNode>();
-            maxError = 3;
-            maxDepth = 10;
+            maxError = 10;
+            maxDepth = 8;
         }
 
         public void BuildTree(Bitmap image, ref PictureBox box)
