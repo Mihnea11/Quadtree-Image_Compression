@@ -9,7 +9,7 @@ namespace Quadtree_Image_Compression
         private double maxError;
         private int maxDepth;
 
-        private Tuple<Color, Dictionary<Color, int>> FindColorAverage(Bitmap image, Point startCorner, Point stopCorner)
+        private Tuple<Color, Dictionary<Color, int>> FindColorAverage(Picture image, Point startCorner, Point stopCorner)
         {
             Dictionary<Color, int> histogram = new Dictionary<Color, int>();
             double r = 0;
@@ -134,11 +134,14 @@ namespace Quadtree_Image_Compression
             return redDetail * 0.2989 + greenDetail * 0.5870 + blueDetail * 0.1140;
         }
 
-        private void SplitTree(Bitmap image)
+        private void SplitTree(Picture image)
         {
             Queue<QuadTreeNode> queue = new Queue<QuadTreeNode>();
 
-            queue.Enqueue(root);
+            queue.Enqueue(root.GetChildrenIndex(0));
+            queue.Enqueue(root.GetChildrenIndex(1));
+            queue.Enqueue(root.GetChildrenIndex(2));
+            queue.Enqueue(root.GetChildrenIndex(3));
 
             while (queue.Count > 0)
             {
@@ -156,11 +159,6 @@ namespace Quadtree_Image_Compression
                 if(node.NodeError > maxError && node.NodeDepth < maxDepth)
                 {
                     node.SplitNode();
-
-                    node.GetChildrenIndex(0).NodeDepth = node.NodeDepth + 1;
-                    node.GetChildrenIndex(1).NodeDepth = node.NodeDepth + 1;
-                    node.GetChildrenIndex(2).NodeDepth = node.NodeDepth + 1;
-                    node.GetChildrenIndex(3).NodeDepth = node.NodeDepth + 1;
 
                     queue.Enqueue(node.GetChildrenIndex(0));
                     queue.Enqueue(node.GetChildrenIndex(1));
@@ -192,10 +190,9 @@ namespace Quadtree_Image_Compression
                     queue.Enqueue(node.GetChildrenIndex(3));
                 }
             }
-
         }
 
-        private void BuildImage(ref Bitmap image)
+        private void BuildImage(Picture image)
         {
             foreach (QuadTreeNode node in compressedImage)
             {
@@ -214,20 +211,24 @@ namespace Quadtree_Image_Compression
             root = new QuadTreeNode();
             compressedImage = new List<QuadTreeNode>();
             maxError = 10;
-            maxDepth = 8;
+            maxDepth = 6;
         }
 
-        public void BuildTree(Bitmap image, ref PictureBox box)
+        public Bitmap BuildTree(Bitmap image)
         {
+            Picture picture = new Picture(image);
+
+            root = new QuadTreeNode();
             root.LeftCorner = new Point(0, 0);
-            root.RightCorner = new Point(image.Width, image.Height);
-            root.NodeDepth = 0;
+            root.RightCorner = new Point(picture.Width, picture.Height);
 
-            SplitTree(image);
+            root.SplitNode();
+            SplitTree(picture);
             FindCompressedImage();
+            BuildImage(picture);
 
-            BuildImage(ref image);
-            box.Image = image;
+            picture.SetBitmap(image);
+            return image;
         }
     }
 }

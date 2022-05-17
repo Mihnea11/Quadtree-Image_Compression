@@ -16,6 +16,7 @@
         {
             nodeError = -1;
             nodeColor = Color.Black;
+            nodeDepth = 0;
 
             leftCorner = new Point(0, 0);
             rightCorner = new Point(0, 0);
@@ -92,6 +93,11 @@
             children[1] = new QuadTreeNode();
             children[2] = new QuadTreeNode();
             children[3] = new QuadTreeNode();
+
+            children[0].NodeDepth = nodeDepth + 1;
+            children[1].NodeDepth = nodeDepth + 1;
+            children[2].NodeDepth = nodeDepth + 1;
+            children[3].NodeDepth = nodeDepth + 1;
 
             children[0].SetCorners(firstLeft, firstRight);
             children[1].SetCorners(secondLeft, secondRight);
