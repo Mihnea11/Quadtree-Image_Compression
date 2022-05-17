@@ -10,14 +10,22 @@ namespace Quadtree_Image_Compression
     {
         private bool mouseDown;
         private Point mouseOffset;
-        private Bitmap? initialImage;
-        private Bitmap? compressedImage;
+        private readonly QuadTree tree;
+        private Stopwatch timer;
 
         public ImageCompressionForm()
         {
             InitializeComponent();
-            initialImage = null;
-            compressedImage = null;
+
+            tree = new QuadTree();
+            tree.ProgressChanged += CompressImageNewStepUpdated;
+
+            timer = new Stopwatch();
+
+            CompressButton.Enabled = false;
+            SaveImageButton.Enabled = false;
+            LoadingBar.Visible = false;
+            CompressionTime.Visible = false;
         }
 
         private void LoadButton_Click(object sender, EventArgs e)
@@ -30,30 +38,53 @@ namespace Quadtree_Image_Compression
             {
                 Bitmap image = new Bitmap(fileDialog.FileName);
                 PictureDisplay.Image = image;
+
+                CompressButton.Enabled = true;
+                SaveImageButton.Enabled = false;
+                CompressionTime.Visible = false;
+                LoadingBar.Value = 0;
             }
         }
 
         private void CompressButton_Click(object sender, EventArgs e)
         {
-            if(PictureDisplay.Image == null)
+            LoadButton.Enabled = false;
+            CompressButton.Enabled = false;
+            SaveImageButton.Enabled = false;
+            LoadingBar.Visible = true;
+
+            backgroundWorker1.RunWorkerAsync();
+        }   
+
+        private void SaveImageButton_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "jpg(*.jpg)|.*jpg";
+
+            if(saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                return;
+                PictureDisplay.Image.Save(saveFileDialog.FileName + ".jpg");
             }
+        }
 
-            initialImage = new Bitmap(PictureDisplay.Image);
-            compressedImage = null;
-            QuadTree t = new QuadTree();
-            Stopwatch timer = new Stopwatch();
-
+        private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
             timer.Start();
-            compressedImage = t.BuildTree(initialImage);
+            Bitmap image = new Bitmap(PictureDisplay.Image);
+            tree.BuildTree(image, ref PictureDisplay);
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            LoadingBar.Value = 100;
+            LoadButton.Enabled = true;
+            SaveImageButton.Enabled = true;
+            LoadingBar.Visible = false;
             timer.Stop();
 
-            PictureDisplay.Image = compressedImage;
-
+            CompressionTime.Visible = true;
             TimeSpan timeSpan = timer.Elapsed;
             string elapsedTime = String.Format("{0:00}.{1:00}s", timeSpan.Seconds, timeSpan.Milliseconds / 10);
-
             if (timeSpan.Minutes >= 1)
             {
                 elapsedTime = String.Format("{0:00}min si {1:00}.{2:00}s", timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds / 10);
@@ -62,24 +93,65 @@ namespace Quadtree_Image_Compression
             {
                 elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds / 10);
             }
-
-            elapsedTimeLabel.Text = elapsedTime;
+            CompressionTime.Text = "Elapsed time: " + elapsedTime;
+            CompressionTime.Location = new Point(panel1.Width / 2 - CompressionTime.Width / 2, 0);
         }
 
-        private void SaveImageButton_Click(object sender, EventArgs e)
+        private void backgroundWorker1_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {
-            if(compressedImage == null)
+            LoadingBar.Value = e.ProgressPercentage;
+        }
+
+        private void CompressImageNewStepUpdated(ImageCompressionSteps newStep)
+        {
+            var progressInPercentage = LoadingBar.Value;
+
+            switch (newStep)
             {
-                return;
+                case ImageCompressionSteps.LoadingImage:
+                    progressInPercentage = 5;
+                    break;
+
+                case ImageCompressionSteps.ImageLoaded:
+                case ImageCompressionSteps.SplitQuadTree:
+                    progressInPercentage = 15;
+                    break;
+
+                case ImageCompressionSteps.AnalyzingImageNode:
+                    if (progressInPercentage < 80)
+                    {
+                        progressInPercentage++;
+                    }
+                    break;
+
+                case ImageCompressionSteps.QuadTreeCompleted:
+                    progressInPercentage = 80;
+                    break;
+
+                case ImageCompressionSteps.SplitNode:
+                    break;
+
+                case ImageCompressionSteps.StartCompressingImage:
+                    progressInPercentage = 81;
+                    break;
+
+                case ImageCompressionSteps.ImageCompressed:
+                case ImageCompressionSteps.BuildImageInMemory:
+                    progressInPercentage = 90;
+                    break;
+
+                case ImageCompressionSteps.ImageCompleted:
+                case ImageCompressionSteps.StartWriteImageToBitmap:
+                    progressInPercentage = 95;
+                    break;
+
+                case ImageCompressionSteps.BitmapCompleted:
+                case ImageCompressionSteps.Completed:
+                    progressInPercentage = 100;
+                    break;
             }
 
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "jpg(*.jpg)|.*jpg";
-
-            if(saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                PictureDisplay.Image.Save(saveFileDialog.FileName + ".jpg");
-            }
+            backgroundWorker1.ReportProgress(progressInPercentage);
         }
 
         private void CloseButton_Click(object sender, EventArgs e)

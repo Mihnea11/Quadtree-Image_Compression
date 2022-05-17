@@ -35,17 +35,20 @@
             this.PictureDisplay = new System.Windows.Forms.PictureBox();
             this.LoadButton = new System.Windows.Forms.Button();
             this.CompressButton = new System.Windows.Forms.Button();
-            this.textLabel = new System.Windows.Forms.Label();
-            this.elapsedTimeLabel = new System.Windows.Forms.Label();
             this.Bar = new System.Windows.Forms.Panel();
             this.Title = new System.Windows.Forms.Label();
             this.CloseButton = new System.Windows.Forms.Button();
             this.MenuOptions = new System.Windows.Forms.Panel();
             this.SaveImageButton = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.LoadingBar = new System.Windows.Forms.ProgressBar();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.CompressionTime = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureDisplay)).BeginInit();
             this.Bar.SuspendLayout();
             this.MenuOptions.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -78,7 +81,7 @@
             // 
             this.PictureDisplay.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.PictureDisplay.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.PictureDisplay.Location = new System.Drawing.Point(275, 90);
+            this.PictureDisplay.Location = new System.Drawing.Point(275, 150);
             this.PictureDisplay.Name = "PictureDisplay";
             this.PictureDisplay.Size = new System.Drawing.Size(750, 500);
             this.PictureDisplay.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -95,7 +98,7 @@
             this.LoadButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.LoadButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.LoadButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.LoadButton.Location = new System.Drawing.Point(20, 189);
+            this.LoadButton.Location = new System.Drawing.Point(20, 234);
             this.LoadButton.Name = "LoadButton";
             this.LoadButton.Size = new System.Drawing.Size(210, 40);
             this.LoadButton.TabIndex = 1;
@@ -113,35 +116,13 @@
             this.CompressButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CompressButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.CompressButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.CompressButton.Location = new System.Drawing.Point(20, 273);
+            this.CompressButton.Location = new System.Drawing.Point(20, 318);
             this.CompressButton.Name = "CompressButton";
             this.CompressButton.Size = new System.Drawing.Size(210, 40);
             this.CompressButton.TabIndex = 2;
             this.CompressButton.Text = "Compress Image";
             this.CompressButton.UseVisualStyleBackColor = false;
             this.CompressButton.Click += new System.EventHandler(this.CompressButton_Click);
-            // 
-            // textLabel
-            // 
-            this.textLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.textLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.textLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(42)))), ((int)(((byte)(54)))), ((int)(((byte)(59)))));
-            this.textLabel.Location = new System.Drawing.Point(534, 613);
-            this.textLabel.Name = "textLabel";
-            this.textLabel.Size = new System.Drawing.Size(146, 28);
-            this.textLabel.TabIndex = 3;
-            this.textLabel.Text = "Elapsed time :";
-            // 
-            // elapsedTimeLabel
-            // 
-            this.elapsedTimeLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.elapsedTimeLabel.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.elapsedTimeLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(42)))), ((int)(((byte)(54)))), ((int)(((byte)(59)))));
-            this.elapsedTimeLabel.Location = new System.Drawing.Point(674, 617);
-            this.elapsedTimeLabel.Name = "elapsedTimeLabel";
-            this.elapsedTimeLabel.Size = new System.Drawing.Size(111, 28);
-            this.elapsedTimeLabel.TabIndex = 4;
-            this.elapsedTimeLabel.Text = "-";
             // 
             // Bar
             // 
@@ -164,7 +145,7 @@
             this.Title.ForeColor = System.Drawing.Color.White;
             this.Title.Location = new System.Drawing.Point(369, 7);
             this.Title.Name = "Title";
-            this.Title.Size = new System.Drawing.Size(434, 60);
+            this.Title.Size = new System.Drawing.Size(424, 59);
             this.Title.TabIndex = 1;
             this.Title.Text = "Image Compression";
             this.Title.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -194,7 +175,7 @@
             this.MenuOptions.Dock = System.Windows.Forms.DockStyle.Left;
             this.MenuOptions.Location = new System.Drawing.Point(0, 74);
             this.MenuOptions.Name = "MenuOptions";
-            this.MenuOptions.Size = new System.Drawing.Size(250, 586);
+            this.MenuOptions.Size = new System.Drawing.Size(250, 676);
             this.MenuOptions.TabIndex = 6;
             // 
             // SaveImageButton
@@ -207,7 +188,7 @@
             this.SaveImageButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SaveImageButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.SaveImageButton.ForeColor = System.Drawing.SystemColors.Control;
-            this.SaveImageButton.Location = new System.Drawing.Point(20, 357);
+            this.SaveImageButton.Location = new System.Drawing.Point(20, 402);
             this.SaveImageButton.Name = "SaveImageButton";
             this.SaveImageButton.Size = new System.Drawing.Size(210, 40);
             this.SaveImageButton.TabIndex = 3;
@@ -215,14 +196,49 @@
             this.SaveImageButton.UseVisualStyleBackColor = false;
             this.SaveImageButton.Click += new System.EventHandler(this.SaveImageButton_Click);
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.CompressionTime);
+            this.panel1.Controls.Add(this.LoadingBar);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(250, 653);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(800, 97);
+            this.panel1.TabIndex = 7;
+            // 
+            // LoadingBar
+            // 
+            this.LoadingBar.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.LoadingBar.Location = new System.Drawing.Point(25, 3);
+            this.LoadingBar.Name = "LoadingBar";
+            this.LoadingBar.Size = new System.Drawing.Size(750, 29);
+            this.LoadingBar.TabIndex = 5;
+            this.LoadingBar.Visible = false;
+            // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.WorkerReportsProgress = true;
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            // 
+            // CompressionTime
+            // 
+            this.CompressionTime.AutoSize = true;
+            this.CompressionTime.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.CompressionTime.Location = new System.Drawing.Point(324, 0);
+            this.CompressionTime.Name = "CompressionTime";
+            this.CompressionTime.Size = new System.Drawing.Size(151, 31);
+            this.CompressionTime.TabIndex = 6;
+            this.CompressionTime.Text = "Elapsed time:";
+            // 
             // ImageCompressionForm
             // 
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(206)))), ((int)(((byte)(168)))));
-            this.ClientSize = new System.Drawing.Size(1050, 660);
+            this.ClientSize = new System.Drawing.Size(1050, 750);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.MenuOptions);
             this.Controls.Add(this.Bar);
-            this.Controls.Add(this.elapsedTimeLabel);
-            this.Controls.Add(this.textLabel);
             this.Controls.Add(this.PictureDisplay);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -233,6 +249,8 @@
             this.Bar.ResumeLayout(false);
             this.Bar.PerformLayout();
             this.MenuOptions.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -245,12 +263,14 @@
         private PictureBox PictureDisplay;
         private Button LoadButton;
         private Button CompressButton;
-        private Label textLabel;
-        private Label elapsedTimeLabel;
         private Panel Bar;
         private Button CloseButton;
         private Panel MenuOptions;
         private Label Title;
         private Button SaveImageButton;
+        private Panel panel1;
+        private ProgressBar LoadingBar;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private Label CompressionTime;
     }
 }

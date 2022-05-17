@@ -1,4 +1,5 @@
-﻿using System.Drawing.Imaging;
+﻿using System.Collections.Concurrent;
+using System.Drawing.Imaging;
 
 namespace Quadtree_Image_Compression
 {
@@ -8,6 +9,9 @@ namespace Quadtree_Image_Compression
         private List<QuadTreeNode> compressedImage;
         private double detailTreshold;
         private int maxDepth;
+
+        public delegate void QuadTreeStepUpdate(ImageCompressionSteps newStep);
+        public event QuadTreeStepUpdate ProgressChanged;
 
         private Tuple<Color, Dictionary<Color, int>> FindAverageColor(Picture image, Point startCorner, Point stopCorner)
         {
@@ -103,10 +107,10 @@ namespace Quadtree_Image_Compression
 
             for (int i = 0; i < 255; i++)
             {
-                sum = sum + (colorFrequency[i] * ((value - i) * (value - i)));
+                sum = sum + (colorFrequency[i] * ((value - i) * (value - i)) / total);
             }
 
-            return sum / total;
+            return sum;
         }
 
         private double FindWeightedAverage(List<int> colorFrequency, long total)
@@ -125,18 +129,9 @@ namespace Quadtree_Image_Compression
             return intesity;
         }
 
-        private double FindZoneDetail(List<int> redFrequency, List<int> greenFrequency, List<int> blueFrequency, long total)
-        {
-            double redIntensity = FindWeightedAverage(redFrequency, total);
-            double greenIntensity = FindWeightedAverage(greenFrequency, total);
-            double blueIntensity = FindWeightedAverage(blueFrequency, total);
-
-            return redIntensity * 0.2989 + greenIntensity * 0.5870 + blueIntensity * 0.1140;
-        }
-
         private void SplitTree(Picture image)
         {
-            Queue<QuadTreeNode> queue = new Queue<QuadTreeNode>();
+            var queue = new ConcurrentQueue<QuadTreeNode>();
 
             queue.Enqueue(root.GetChildrenIndex(0));
             queue.Enqueue(root.GetChildrenIndex(1));
@@ -145,25 +140,47 @@ namespace Quadtree_Image_Compression
 
             while (queue.Count > 0)
             {
-                QuadTreeNode node = queue.Dequeue();
-
-                var results = FindAverageColor(image, node.LeftCorner, node.RightCorner);
-                var redFrequency = FindColorFrequencies(results.Item2, "Red");
-                var greenFrequency = FindColorFrequencies(results.Item2, "Green");
-                var blueFrequency = FindColorFrequencies(results.Item2, "Blue");
-                var zoneDetail = FindZoneDetail(redFrequency, greenFrequency, blueFrequency, (node.RightCorner.X - node.LeftCorner.X) * (node.RightCorner.Y - node.LeftCorner.Y));
-
-                node.NodeColor = results.Item1;
-                node.NodeError = zoneDetail;
-
-                if(node.NodeError > detailTreshold && node.NodeDepth < maxDepth)
+                if (queue.TryDequeue(out var node))
                 {
-                    node.SplitNode();
+                    NotifyNewStep(ImageCompressionSteps.AnalyzingImageNode);
 
-                    queue.Enqueue(node.GetChildrenIndex(0));
-                    queue.Enqueue(node.GetChildrenIndex(1));
-                    queue.Enqueue(node.GetChildrenIndex(2));
-                    queue.Enqueue(node.GetChildrenIndex(3));
+                    var results = FindAverageColor(image, node.LeftCorner, node.RightCorner);
+                    node.NodeColor = results.Item1;
+
+                    var total = (node.RightCorner.X - node.LeftCorner.X) * (node.RightCorner.Y - node.LeftCorner.Y);
+
+                    var greenFrequency = FindColorFrequencies(results.Item2, "Green");
+                    double greenDetail = FindWeightedAverage(greenFrequency, total);
+                    node.NodeError = greenDetail * 0.5870;
+
+                    if (node.NodeError <= detailTreshold)
+                    {
+                        var redFrequency = FindColorFrequencies(results.Item2, "Red");
+                        node.NodeError += 0.2989 * FindWeightedAverage(redFrequency, total);
+                    }
+
+                    if (node.NodeError <= detailTreshold)
+                    {
+                        var blueFrequency = FindColorFrequencies(results.Item2, "Blue");
+                        node.NodeError += 0.1140 * FindWeightedAverage(blueFrequency, total);
+                    }
+
+                    if (node.NodeError > detailTreshold && node.NodeDepth < maxDepth)
+                    {
+                        NotifyNewStep(ImageCompressionSteps.SplitNode);
+
+                        node.SplitNode();
+
+                        node.GetChildrenIndex(0).NodeDepth = node.NodeDepth + 1;
+                        node.GetChildrenIndex(1).NodeDepth = node.NodeDepth + 1;
+                        node.GetChildrenIndex(2).NodeDepth = node.NodeDepth + 1;
+                        node.GetChildrenIndex(3).NodeDepth = node.NodeDepth + 1;
+
+                        queue.Enqueue(node.GetChildrenIndex(0));
+                        queue.Enqueue(node.GetChildrenIndex(1));
+                        queue.Enqueue(node.GetChildrenIndex(2));
+                        queue.Enqueue(node.GetChildrenIndex(3));
+                    }
                 }
             }
         }
@@ -198,7 +215,7 @@ namespace Quadtree_Image_Compression
             {
                 for (int i = node.LeftCorner.X; i < node.RightCorner.X; i++)
                 {
-                    for(int j = node.LeftCorner.Y; j < node.RightCorner.Y; j++)
+                    for (int j = node.LeftCorner.Y; j < node.RightCorner.Y; j++)
                     {
                         image.SetPixel(i, j, node.NodeColor);
                     }
@@ -214,21 +231,50 @@ namespace Quadtree_Image_Compression
             maxDepth = 6;
         }
 
-        public Bitmap BuildTree(Bitmap image)
+        public void BuildTree(Bitmap image, ref PictureBox box)
         {
-            Picture picture = new Picture(image);
-
             root = new QuadTreeNode();
-            root.LeftCorner = new Point(0, 0);
-            root.RightCorner = new Point(picture.Width, picture.Height);
+            compressedImage = new List<QuadTreeNode>();
 
+            NotifyNewStep(ImageCompressionSteps.None);
+
+            root.LeftCorner = new Point(0, 0);
+            root.RightCorner = new Point(image.Width, image.Height);
+            root.NodeDepth = 0;
+
+            NotifyNewStep(ImageCompressionSteps.LoadingImage);
+            var picture = new Picture(image);
+            NotifyNewStep(ImageCompressionSteps.ImageLoaded);
+
+            NotifyNewStep(ImageCompressionSteps.SplitQuadTree);
             root.SplitNode();
             SplitTree(picture);
-            FindCompressedImage();
-            BuildImage(picture);
+            NotifyNewStep(ImageCompressionSteps.QuadTreeCompleted);
 
+            NotifyNewStep(ImageCompressionSteps.StartCompressingImage);
+            FindCompressedImage();
+            NotifyNewStep(ImageCompressionSteps.ImageCompressed);
+
+            NotifyNewStep(ImageCompressionSteps.BuildImageInMemory);
+            BuildImage(picture);
+            NotifyNewStep(ImageCompressionSteps.ImageCompleted);
+
+            NotifyNewStep(ImageCompressionSteps.StartWriteImageToBitmap);
             picture.SetBitmap(image);
-            return image;
+            NotifyNewStep(ImageCompressionSteps.BitmapCompleted);
+
+            box.Image = image;
+            NotifyNewStep(ImageCompressionSteps.Completed);
+        }
+
+        private void NotifyNewStep(ImageCompressionSteps newStep)
+        {
+            ProgressChanged?.Invoke(newStep);
+        }
+
+        private void Clear()
+        {
+            compressedImage.Clear();
         }
     }
 }
