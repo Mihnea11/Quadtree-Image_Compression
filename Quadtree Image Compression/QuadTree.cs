@@ -6,10 +6,10 @@ namespace Quadtree_Image_Compression
     {
         private QuadTreeNode root;
         private List<QuadTreeNode> compressedImage;
-        private double maxError;
+        private double detailTreshold;
         private int maxDepth;
 
-        private Tuple<Color, Dictionary<Color, int>> FindColorAverage(Picture image, Point startCorner, Point stopCorner)
+        private Tuple<Color, Dictionary<Color, int>> FindAverageColor(Picture image, Point startCorner, Point stopCorner)
         {
             Dictionary<Color, int> histogram = new Dictionary<Color, int>();
             double r = 0;
@@ -85,53 +85,53 @@ namespace Quadtree_Image_Compression
             return colorFrequency;
         }
 
-        private double FindColorValue(List<int> frequencyColor, long total)
+        private double FindColorValue(List<int> colorFrequency, long total)
         {
             double sum = 0;
 
             for (int i = 0; i < 255; i++)
             {
-                sum = sum + (i * frequencyColor[i]);
+                sum = sum + (i * colorFrequency[i]);
             }
 
             return sum / total;
         }
 
-        private double FindColorError(List<int> frequencyColor, long total, double value)
+        private double FindColorIntensity(List<int> colorFrequency, long total, double value)
         {
             double sum = 0;
 
             for (int i = 0; i < 255; i++)
             {
-                sum = sum + (frequencyColor[i] * ((value - i) * (value - i)));
+                sum = sum + (colorFrequency[i] * ((value - i) * (value - i)));
             }
 
             return sum / total;
         }
 
-        private double FindWeightedAverage(List<int> frequencyColor, long total)
+        private double FindWeightedAverage(List<int> colorFrequency, long total)
         {
-            double error, value;
+            double intesity, value;
 
-            error = value = 0;
+            intesity = value = 0;
 
             if (total > 0)
             {
-                value = FindColorValue(frequencyColor, total);
-                error = FindColorError(frequencyColor, total, value);
-                error = Math.Pow(error, 0.5);
+                value = FindColorValue(colorFrequency, total);
+                intesity = FindColorIntensity(colorFrequency, total, value);
+                intesity = Math.Pow(intesity, 0.5);
             }
 
-            return error;
+            return intesity;
         }
 
-        private double FindDetail(List<int> frequencyColorRed, List<int> frequencyColorGreen, List<int> frequencyColorBlue, long total)
+        private double FindZoneDetail(List<int> redFrequency, List<int> greenFrequency, List<int> blueFrequency, long total)
         {
-            double redDetail = FindWeightedAverage(frequencyColorRed, total);
-            double greenDetail = FindWeightedAverage(frequencyColorGreen, total);
-            double blueDetail = FindWeightedAverage(frequencyColorBlue, total);
+            double redIntensity = FindWeightedAverage(redFrequency, total);
+            double greenIntensity = FindWeightedAverage(greenFrequency, total);
+            double blueIntensity = FindWeightedAverage(blueFrequency, total);
 
-            return redDetail * 0.2989 + greenDetail * 0.5870 + blueDetail * 0.1140;
+            return redIntensity * 0.2989 + greenIntensity * 0.5870 + blueIntensity * 0.1140;
         }
 
         private void SplitTree(Picture image)
@@ -147,16 +147,16 @@ namespace Quadtree_Image_Compression
             {
                 QuadTreeNode node = queue.Dequeue();
 
-                var results = FindColorAverage(image, node.LeftCorner, node.RightCorner);
+                var results = FindAverageColor(image, node.LeftCorner, node.RightCorner);
                 var redFrequency = FindColorFrequencies(results.Item2, "Red");
                 var greenFrequency = FindColorFrequencies(results.Item2, "Green");
                 var blueFrequency = FindColorFrequencies(results.Item2, "Blue");
-                var detail = FindDetail(redFrequency, greenFrequency, blueFrequency, (node.RightCorner.X - node.LeftCorner.X) * (node.RightCorner.Y - node.LeftCorner.Y));
+                var zoneDetail = FindZoneDetail(redFrequency, greenFrequency, blueFrequency, (node.RightCorner.X - node.LeftCorner.X) * (node.RightCorner.Y - node.LeftCorner.Y));
 
                 node.NodeColor = results.Item1;
-                node.NodeError = detail;
+                node.NodeError = zoneDetail;
 
-                if(node.NodeError > maxError && node.NodeDepth < maxDepth)
+                if(node.NodeError > detailTreshold && node.NodeDepth < maxDepth)
                 {
                     node.SplitNode();
 
@@ -210,7 +210,7 @@ namespace Quadtree_Image_Compression
         {
             root = new QuadTreeNode();
             compressedImage = new List<QuadTreeNode>();
-            maxError = 10;
+            detailTreshold = 10;
             maxDepth = 6;
         }
 
