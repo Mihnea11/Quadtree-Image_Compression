@@ -41,14 +41,22 @@
             this.MenuOptions = new System.Windows.Forms.Panel();
             this.SaveImageButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.CompressionTime = new System.Windows.Forms.Label();
             this.LoadingBar = new System.Windows.Forms.ProgressBar();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.CompressionTime = new System.Windows.Forms.Label();
+            this.CompressionRateSlider = new System.Windows.Forms.TrackBar();
+            this.CompressionRate = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.DetailLevel = new System.Windows.Forms.TextBox();
+            this.DetailLevelSlider = new System.Windows.Forms.TrackBar();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureDisplay)).BeginInit();
             this.Bar.SuspendLayout();
             this.MenuOptions.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.CompressionRateSlider)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DetailLevelSlider)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -206,6 +214,17 @@
             this.panel1.Size = new System.Drawing.Size(800, 97);
             this.panel1.TabIndex = 7;
             // 
+            // CompressionTime
+            // 
+            this.CompressionTime.AutoSize = true;
+            this.CompressionTime.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.CompressionTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(42)))), ((int)(((byte)(54)))), ((int)(((byte)(59)))));
+            this.CompressionTime.Location = new System.Drawing.Point(324, 0);
+            this.CompressionTime.Name = "CompressionTime";
+            this.CompressionTime.Size = new System.Drawing.Size(151, 31);
+            this.CompressionTime.TabIndex = 6;
+            this.CompressionTime.Text = "Elapsed time:";
+            // 
             // LoadingBar
             // 
             this.LoadingBar.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -222,20 +241,85 @@
             this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
-            // CompressionTime
+            // CompressionRateSlider
             // 
-            this.CompressionTime.AutoSize = true;
-            this.CompressionTime.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CompressionTime.Location = new System.Drawing.Point(324, 0);
-            this.CompressionTime.Name = "CompressionTime";
-            this.CompressionTime.Size = new System.Drawing.Size(151, 31);
-            this.CompressionTime.TabIndex = 6;
-            this.CompressionTime.Text = "Elapsed time:";
+            this.CompressionRateSlider.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.CompressionRateSlider.Location = new System.Drawing.Point(278, 92);
+            this.CompressionRateSlider.Maximum = 100;
+            this.CompressionRateSlider.Name = "CompressionRateSlider";
+            this.CompressionRateSlider.Size = new System.Drawing.Size(205, 56);
+            this.CompressionRateSlider.TabIndex = 8;
+            this.CompressionRateSlider.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.CompressionRateSlider.Scroll += new System.EventHandler(this.CompressionRateSlider_Scroll);
+            // 
+            // CompressionRate
+            // 
+            this.CompressionRate.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.CompressionRate.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.CompressionRate.Location = new System.Drawing.Point(489, 92);
+            this.CompressionRate.MaxLength = 3;
+            this.CompressionRate.Name = "CompressionRate";
+            this.CompressionRate.Size = new System.Drawing.Size(42, 27);
+            this.CompressionRate.TabIndex = 9;
+            this.CompressionRate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.CompressionRate.TextChanged += new System.EventHandler(this.CompressionRate_TextChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(42)))), ((int)(((byte)(54)))), ((int)(((byte)(59)))));
+            this.label1.Location = new System.Drawing.Point(285, 120);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(170, 28);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "Compression Rate";
+            // 
+            // DetailLevel
+            // 
+            this.DetailLevel.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.DetailLevel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.DetailLevel.Location = new System.Drawing.Point(983, 92);
+            this.DetailLevel.MaxLength = 2;
+            this.DetailLevel.Name = "DetailLevel";
+            this.DetailLevel.Size = new System.Drawing.Size(42, 27);
+            this.DetailLevel.TabIndex = 11;
+            this.DetailLevel.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.DetailLevel.TextChanged += new System.EventHandler(this.DetailLevel_TextChanged);
+            // 
+            // DetailLevelSlider
+            // 
+            this.DetailLevelSlider.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.DetailLevelSlider.Location = new System.Drawing.Point(772, 92);
+            this.DetailLevelSlider.Name = "DetailLevelSlider";
+            this.DetailLevelSlider.Size = new System.Drawing.Size(205, 56);
+            this.DetailLevelSlider.TabIndex = 12;
+            this.DetailLevelSlider.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.DetailLevelSlider.Scroll += new System.EventHandler(this.DetailLevelSlider_Scroll);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(42)))), ((int)(((byte)(54)))), ((int)(((byte)(59)))));
+            this.label2.Location = new System.Drawing.Point(778, 120);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(108, 28);
+            this.label2.TabIndex = 13;
+            this.label2.Text = "Detail level";
             // 
             // ImageCompressionForm
             // 
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(206)))), ((int)(((byte)(168)))));
             this.ClientSize = new System.Drawing.Size(1050, 750);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.DetailLevelSlider);
+            this.Controls.Add(this.DetailLevel);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.CompressionRate);
+            this.Controls.Add(this.CompressionRateSlider);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.MenuOptions);
             this.Controls.Add(this.Bar);
@@ -251,7 +335,10 @@
             this.MenuOptions.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.CompressionRateSlider)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DetailLevelSlider)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -272,5 +359,11 @@
         private ProgressBar LoadingBar;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private Label CompressionTime;
+        private TrackBar CompressionRateSlider;
+        private TextBox CompressionRate;
+        private Label label1;
+        private TextBox DetailLevel;
+        private TrackBar DetailLevelSlider;
+        private Label label2;
     }
 }

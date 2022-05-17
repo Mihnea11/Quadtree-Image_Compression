@@ -10,7 +10,7 @@ namespace Quadtree_Image_Compression
     {
         private bool mouseDown;
         private Point mouseOffset;
-        private readonly QuadTree tree;
+        private QuadTree tree;
         private Stopwatch timer;
 
         public ImageCompressionForm()
@@ -48,10 +48,17 @@ namespace Quadtree_Image_Compression
 
         private void CompressButton_Click(object sender, EventArgs e)
         {
+            timer.Reset();
             LoadButton.Enabled = false;
             CompressButton.Enabled = false;
             SaveImageButton.Enabled = false;
             LoadingBar.Visible = true;
+
+            CompressionRate.Text = CompressionRateSlider.Value.ToString();
+            DetailLevel.Text = DetailLevelSlider.Value.ToString();
+
+            tree.DetailTreshold = CompressionRateSlider.Value;
+            tree.MaxDepth = DetailLevelSlider.Value;
 
             backgroundWorker1.RunWorkerAsync();
         }   
@@ -178,6 +185,64 @@ namespace Quadtree_Image_Compression
         private void MouseUpEvent(object sender, MouseEventArgs e)
         {
             mouseDown = false;
+        }
+
+        private void CompressionRateSlider_Scroll(object sender, EventArgs e)
+        {
+            CompressionRate.Text = CompressionRateSlider.Value.ToString();
+        }
+
+        private void CompressionRate_TextChanged(object sender, EventArgs e)
+        {
+            int value = 0;
+
+            if(CompressionRate.Text != "")
+            {
+                var isNumber = int.TryParse(CompressionRate.Text, out value);
+                if(isNumber == false)
+                {
+                    value = 0;
+                }
+                else if(value < 0)
+                {
+                    value = 0;
+                }
+                else if(value > 100)
+                {
+                    value = 100;
+                }
+            }
+
+            CompressionRateSlider.Value = value;
+        }
+
+        private void DetailLevelSlider_Scroll(object sender, EventArgs e)
+        {
+            DetailLevel.Text = DetailLevelSlider.Value.ToString();
+        }
+
+        private void DetailLevel_TextChanged(object sender, EventArgs e)
+        {
+            int value = 0;
+
+            if (DetailLevel.Text != "")
+            {
+                var isNumber = int.TryParse(DetailLevel.Text, out value);
+                if (isNumber == false)
+                {
+                    value = 0;
+                }
+                else if (value < 0)
+                {
+                    value = 0;
+                }
+                else if (value > 10)
+                {
+                    value = 10;
+                }
+            }
+
+            DetailLevelSlider.Value = value;
         }
     }
 }

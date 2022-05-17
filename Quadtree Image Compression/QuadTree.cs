@@ -13,6 +13,18 @@ namespace Quadtree_Image_Compression
         public delegate void QuadTreeStepUpdate(ImageCompressionSteps newStep);
         public event QuadTreeStepUpdate ProgressChanged;
 
+        public double DetailTreshold
+        {
+            get { return detailTreshold; }
+            set { detailTreshold = value; }
+        }
+
+        public int MaxDepth
+        {
+            get { return maxDepth; }
+            set { maxDepth = value; }
+        }
+
         private Tuple<Color, Dictionary<Color, int>> FindAverageColor(Picture image, Point startCorner, Point stopCorner)
         {
             Dictionary<Color, int> histogram = new Dictionary<Color, int>();
