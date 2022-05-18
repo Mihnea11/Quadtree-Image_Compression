@@ -245,7 +245,6 @@
             // 
             this.CompressionRateSlider.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.CompressionRateSlider.Location = new System.Drawing.Point(278, 92);
-            this.CompressionRateSlider.Maximum = 100;
             this.CompressionRateSlider.Name = "CompressionRateSlider";
             this.CompressionRateSlider.Size = new System.Drawing.Size(205, 56);
             this.CompressionRateSlider.TabIndex = 8;
@@ -257,7 +256,7 @@
             this.CompressionRate.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.CompressionRate.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.CompressionRate.Location = new System.Drawing.Point(489, 92);
-            this.CompressionRate.MaxLength = 3;
+            this.CompressionRate.MaxLength = 2;
             this.CompressionRate.Name = "CompressionRate";
             this.CompressionRate.Size = new System.Drawing.Size(42, 27);
             this.CompressionRate.TabIndex = 9;

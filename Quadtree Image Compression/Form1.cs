@@ -207,9 +207,9 @@ namespace Quadtree_Image_Compression
                 {
                     value = 0;
                 }
-                else if(value > 100)
+                else if(value > 10)
                 {
-                    value = 100;
+                    value = 10;
                 }
             }
 
