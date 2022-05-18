@@ -27,7 +27,6 @@ namespace Quadtree_Image_Compression
             LoadingBar.Visible = false;
             CompressionTime.Visible = false;
         }
-
         private void LoadButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
@@ -45,7 +44,6 @@ namespace Quadtree_Image_Compression
                 LoadingBar.Value = 0;
             }
         }
-
         private void CompressButton_Click(object sender, EventArgs e)
         {
             timer.Reset();
@@ -62,7 +60,6 @@ namespace Quadtree_Image_Compression
 
             backgroundWorker1.RunWorkerAsync();
         }   
-
         private void SaveImageButton_Click(object sender, EventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -73,14 +70,12 @@ namespace Quadtree_Image_Compression
                 PictureDisplay.Image.Save(saveFileDialog.FileName + ".jpg");
             }
         }
-
         private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             timer.Start();
             Bitmap image = new Bitmap(PictureDisplay.Image);
             tree.BuildTree(image, ref PictureDisplay);
         }
-
         private void backgroundWorker1_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             LoadingBar.Value = 100;
@@ -103,12 +98,10 @@ namespace Quadtree_Image_Compression
             CompressionTime.Text = "Elapsed time: " + elapsedTime;
             CompressionTime.Location = new Point(panel1.Width / 2 - CompressionTime.Width / 2, 0);
         }
-
         private void backgroundWorker1_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {
             LoadingBar.Value = e.ProgressPercentage;
         }
-
         private void CompressImageNewStepUpdated(ImageCompressionSteps newStep)
         {
             var progressInPercentage = LoadingBar.Value;
@@ -160,19 +153,16 @@ namespace Quadtree_Image_Compression
 
             backgroundWorker1.ReportProgress(progressInPercentage);
         }
-
         private void CloseButton_Click(object sender, EventArgs e)
         {
             this.Close();
         }
-
         private void MouseDownEvent(object sender, MouseEventArgs e)
         {
             mouseOffset.X = e.X;
             mouseOffset.Y = e.Y;
             mouseDown = true;
         }
-
         private void MouseMoveEvent(object sender, MouseEventArgs e)
         {
             if(mouseDown == true)
@@ -181,17 +171,14 @@ namespace Quadtree_Image_Compression
                 Location = new Point(currentPosition.X - mouseOffset.X, currentPosition.Y - mouseOffset.Y);
             }
         }
-
         private void MouseUpEvent(object sender, MouseEventArgs e)
         {
             mouseDown = false;
         }
-
         private void CompressionRateSlider_Scroll(object sender, EventArgs e)
         {
             CompressionRate.Text = CompressionRateSlider.Value.ToString();
         }
-
         private void CompressionRate_TextChanged(object sender, EventArgs e)
         {
             int value = 0;
@@ -215,12 +202,10 @@ namespace Quadtree_Image_Compression
 
             CompressionRateSlider.Value = value;
         }
-
         private void DetailLevelSlider_Scroll(object sender, EventArgs e)
         {
             DetailLevel.Text = DetailLevelSlider.Value.ToString();
         }
-
         private void DetailLevel_TextChanged(object sender, EventArgs e)
         {
             int value = 0;

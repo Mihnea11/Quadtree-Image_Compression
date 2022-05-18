@@ -10,8 +10,6 @@
         private int nodeDepth;
         private QuadTreeNode[] children;
 
-        public static QuadTreeNode nullNode = new QuadTreeNode();
-
         public QuadTreeNode()
         {
             nodeError = -1;
@@ -24,19 +22,16 @@
             isLeaf = true;
             children = new QuadTreeNode[4];
         }
-
         public double NodeError
         {
             get { return nodeError; }
             set { nodeError = value; }
         }
-
         public Color NodeColor
         {
             get { return nodeColor; }
             set { nodeColor = value; }
         }
-
         public Point LeftCorner
         {
             get { return leftCorner; }
@@ -47,30 +42,25 @@
             get { return rightCorner; }
             set { rightCorner = value; }
         }
-
         public bool IsLeaf
         {
             get { return isLeaf; }
             set { isLeaf = value; }
         }
-
         public int NodeDepth
         {
             get { return nodeDepth; }
             set { nodeDepth = value; }
         }
-
-        public QuadTreeNode GetChildrenIndex(int index)
+        public IReadOnlyList<QuadTreeNode> GetChildren()
         {
-            return children[index];
+            return children.ToList();
         }
-
         public void SetCorners(Point leftCorner, Point rightCorner)
         {
             this.leftCorner = leftCorner;
             this.rightCorner = rightCorner;
         }
-
         public void SplitNode()
         {
             isLeaf = false;
