@@ -69,7 +69,7 @@ namespace Quadtree_Image_Compression
             Color average = Color.FromArgb((int)r, (int)g, (int)b);
             return new Tuple<Color, Dictionary<Color, int>>(average, histogram);
         }
-        public List<int> FindColorFrequencies(Dictionary<Color, int> histogram, string colorName)
+        public List<int> FindColorFrequencies(Dictionary<Color, int> histogram, Colors colorName)
         {
             var colorFrequency = new List<int>(new int[255]) { 0 };
 
@@ -78,13 +78,13 @@ namespace Quadtree_Image_Compression
                 int dataValue = 0;
                 switch (colorName)
                 {
-                    case "Red":
+                    case Colors.Red:
                         dataValue = p.Key.R;
                         break;
-                    case "Green":
+                    case Colors.Green:
                         dataValue = p.Key.G;
                         break;
-                    case "Blue":
+                    case Colors.Blue:
                         dataValue = p.Key.B;
                         break;
                 }
@@ -147,18 +147,18 @@ namespace Quadtree_Image_Compression
 
                     var total = (node.RightCorner.X - node.LeftCorner.X) * (node.RightCorner.Y - node.LeftCorner.Y);
 
-                    var greenFrequency = FindColorFrequencies(results.Item2, "Green");
+                    var greenFrequency = FindColorFrequencies(results.Item2, Colors.Green);
                     node.NodeError = GreenPercentage * FindWeightedAverage(greenFrequency, total);
 
                     if (node.NodeError <= detailTreshold)
                     {
-                        var redFrequency = FindColorFrequencies(results.Item2, "Red");
+                        var redFrequency = FindColorFrequencies(results.Item2, Colors.Red);
                         node.NodeError += RedPercentage * FindWeightedAverage(redFrequency, total);
                     }
 
                     if (node.NodeError <= detailTreshold)
                     {
-                        var blueFrequency = FindColorFrequencies(results.Item2, "Blue");
+                        var blueFrequency = FindColorFrequencies(results.Item2, Colors.Blue);
                         node.NodeError += BluePercentage * FindWeightedAverage(blueFrequency, total);
                     }
 

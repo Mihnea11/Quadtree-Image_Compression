@@ -22,7 +22,6 @@ namespace Quadtree_Image_Compression
 
             image.UnlockBits(bitmapData);
         }
-
         #pragma warning disable CS8618
         public Picture(Bitmap image)
         {
@@ -32,7 +31,6 @@ namespace Quadtree_Image_Compression
             LoadPixelData(image);
         }
         #pragma warning restore CS8618
-
         public Color GetPixel(int x, int y)
         {
             var red = RGBdata[(x * 4) + (y * 4 * Width) + 2];
@@ -41,14 +39,12 @@ namespace Quadtree_Image_Compression
 
             return Color.FromArgb(red, green, blue);
         }
-
         public void SetPixel(int x, int y, Color color)
         {
             RGBdata[(x * 4) + (y * 4 * Width) + 2] = color.R;
             RGBdata[(x * 4) + (y * 4 * Width) + 1] = color.G;
             RGBdata[(x * 4) + (y * 4 * Width) + 0] = color.B;
         }
-
         public void SetBitmap(Bitmap image)
         {
             var rectangle = new Rectangle(0, 0, image.Width, image.Height);
